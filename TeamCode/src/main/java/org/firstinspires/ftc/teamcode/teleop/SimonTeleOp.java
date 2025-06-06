@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
@@ -23,6 +24,8 @@ public class SimonTeleOp extends OpMode {
         backRightMotor = hardwareMap.dcMotor.get("rightRear");
         clawSubsystem = new Claw(hardwareMap.servo.get("claw"));
         armSubsystem = new Arm(hardwareMap.servo.get("arm"));
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
     public void loop(){
 
@@ -50,8 +53,8 @@ public class SimonTeleOp extends OpMode {
             armSubsystem.goToPosition(Arm.ArmPosition.HIGH);
         }
 
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x * 1.1;
+        double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+        double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
         double rx = gamepad1.right_stick_x;
 
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
