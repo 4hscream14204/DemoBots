@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
@@ -16,6 +17,8 @@ public class SimonTeleOp extends OpMode {
     public DcMotor backRightMotor;
     public Claw clawSubsystem;
     public Arm armSubsystem;
+    Gamepad currentGamepad1 = new Gamepad();
+    Gamepad previousGamepad1 = new Gamepad();
     @Override
     public void init(){
         frontLeftMotor = hardwareMap.dcMotor.get("leftFront");
@@ -29,27 +32,27 @@ public class SimonTeleOp extends OpMode {
     }
     public void loop(){
 
-        if(gamepad1.left_bumper){
+        if(currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
             clawSubsystem.toggleClaw();
         }
 
-        if(gamepad1.a){
+        if(currentGamepad1.a && !previousGamepad1.a){
             armSubsystem.goToPosition(Arm.ArmPosition.HOME);
         }
 
-        if(gamepad1.b){
+        if(currentGamepad1.b && !previousGamepad1.b){
             armSubsystem.goToPosition(Arm.ArmPosition.GROUND);
         }
 
-        if(gamepad1.x){
+        if(currentGamepad1.x && !previousGamepad1.x){
             armSubsystem.goToPosition(Arm.ArmPosition.LOW);
         }
 
-        if(gamepad1.y){
+        if(currentGamepad1.y && !previousGamepad1.y){
             armSubsystem.goToPosition(Arm.ArmPosition.MEDIUM);
         }
 
-        if(gamepad1.right_bumper){
+        if(currentGamepad1.right_bumper && !previousGamepad1.right_bumper){
             armSubsystem.goToPosition(Arm.ArmPosition.HIGH);
         }
 
