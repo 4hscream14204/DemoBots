@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
-import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 @TeleOp(name = "Simon TeleOp")
 public class SimonTeleOp extends OpMode {
@@ -15,50 +15,39 @@ public class SimonTeleOp extends OpMode {
     public DcMotor backLeftMotor;
     public DcMotor frontRightMotor;
     public DcMotor backRightMotor;
-    public Claw clawSubsystem;
+    public Intake intakeSubsystem;
     public Arm armSubsystem;
-    Gamepad currentGamepad1 = new Gamepad();
-    Gamepad previousGamepad1 = new Gamepad();
     @Override
     public void init(){
         frontLeftMotor = hardwareMap.dcMotor.get("leftFront");
         frontRightMotor = hardwareMap.dcMotor.get("rightFront");
         backLeftMotor = hardwareMap.dcMotor.get("leftRear");
         backRightMotor = hardwareMap.dcMotor.get("rightRear");
-        clawSubsystem = new Claw(hardwareMap.servo.get("claw"));
+        intakeSubsystem = new Intake(hardwareMap.servo.get("intake"));
         armSubsystem = new Arm(hardwareMap.servo.get("arm"));
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
     public void loop(){
 
-        //Copy the previous gamepad state so we can compare it to the current gamepad state
-        previousGamepad1.copy(currentGamepad1);
-        //Store gamepad state to compare with
-        currentGamepad1.copy(gamepad1);
-
-        if(currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
-            clawSubsystem.toggleClaw();
-        }
-
-        if(currentGamepad1.a && !previousGamepad1.a){
+        if(gamepad1.aWasPressed()){
             armSubsystem.goToPosition(Arm.ArmPosition.HOME);
         }
 
-        if(currentGamepad1.b && !previousGamepad1.b){
-            armSubsystem.goToPosition(Arm.ArmPosition.GROUND);
-        }
-
-        if(currentGamepad1.x && !previousGamepad1.x){
+        if(gamepad1.bWasPressed()){
             armSubsystem.goToPosition(Arm.ArmPosition.LOW);
         }
 
-        if(currentGamepad1.y && !previousGamepad1.y){
+        if(gamepad1.xWasPressed()){
             armSubsystem.goToPosition(Arm.ArmPosition.MEDIUM);
         }
 
-        if(currentGamepad1.right_bumper && !previousGamepad1.right_bumper){
+        if(gamepad1.yWasPressed()){
             armSubsystem.goToPosition(Arm.ArmPosition.HIGH);
+        }
+
+        if(gamepad1.rightBumperWasPressed()){
+            armSubsystem.goToPosition(Arm.ArmPosition.POLE);
         }
 
         double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
@@ -75,6 +64,8 @@ public class SimonTeleOp extends OpMode {
         backLeftMotor.setPower(backLeftPower);
         frontRightMotor.setPower(frontRightPower);
         backRightMotor.setPower(backRightPower);
+
+        intakeSubsystem.intake(gamepad1.left_trigger / 2 + -1 * gamepad1.right_trigger / 2 + 0.5);
 
 
     }

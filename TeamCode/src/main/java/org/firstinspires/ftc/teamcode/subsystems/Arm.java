@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Arm {
     public enum ArmPosition {
         HOME(0),
-        GROUND(0.03),
         LOW(0.1),
         MEDIUM(0.153),
-        HIGH(0.194);
+        HIGH(0.194),
+        POLE(0.2);
         public final double value;
         ArmPosition(double m_position){
             this.value = m_position;
