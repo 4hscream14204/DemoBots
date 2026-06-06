@@ -1,4 +1,4 @@
-ackage org.firstinspires.ftc.teamcode.opmode.auto;
+package org.firstinspires.ftc.teamcode.opmode.auto;
 
 import android.provider.ContactsContract;
 
@@ -22,5 +22,8 @@ import org.firstinspires.ftc.teamcode.base.RobotBase;
 
 @Autonomous(name = "Park In Blue Zone")
 public class BlueFarAuto extends OpMode {
+    Follower follower
+    Robotbase robotbase
+    SequentialCommandGroup path
 
 }
