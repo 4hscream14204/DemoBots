@@ -9,36 +9,36 @@ import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
-import org.firstinspires.ftc.teamcode.base.DataStorage;
-import org.firstinspires.ftc.teamcode.base.RobotBase;
+import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
+@Autonomous(name = "Park In Warehouse Zone")
 public class BlueParkInWhiteBox {
 
-
-    @Autonomous(name = "Park In Warehouse Zone")
-    Follower follower;
-    Robotbase robotbase;
+   Follower follower;
     SequentialCommandGroup path;
-
 
     Pose startPose = new Pose(5,89, Math.toRadians(0));
     Pose endPose = new Pose(6,134,Math.toRadians(0));
 
     BezierLine goesToParkInZone = new BezierLine(startPose,endPose);
 
-
     PathChain startToPark;
+        @Override
 
-    @Override
-    public void init() {
-        CommandScheduler.getInstance().reset();
-        follower = Constants.createFollower(hardwareMap);
-        robotBase = new RobotBase(hardwareMap);
+        public void init() {
+            CommandScheduler.getInstance().reset();
+            follower = Constants.createFollower(hardwareMap);
 
         startToPark = follower.pathBuilder()
                 .addPath(goesToParkInZone)
                 .setConstantHeadingInterpolation(Math.toRadians(0))
                 .build();
+
+        path = new SequentialCommandGroup(
+                new FollowPathCommand(follower,startToPark,true,1)
+        );
+
+
 
 
     }}

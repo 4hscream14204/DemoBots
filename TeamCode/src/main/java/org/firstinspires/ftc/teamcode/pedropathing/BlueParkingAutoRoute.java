@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedropathing;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -9,13 +11,11 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 
-import org.firstinspires.ftc.teamcode.base.DataStorage;
-import org.firstinspires.ftc.teamcode.base.RobotBase;
 
 @Autonomous(name = "Park In Blue Zone")
-public class BlueParkingAutoRoute extends OpMode {
+public class BlueParkingAutoRoute {
+
     Follower follower;
-    Robotbase robotbase;
     SequentialCommandGroup path;
 
 
@@ -33,7 +33,6 @@ public class BlueParkingAutoRoute extends OpMode {
     public void init() {
         CommandScheduler.getInstance().reset();
         follower = Constants.createFollower(hardwareMap);
-        robotBase = new RobotBase(hardwareMap);
 
         startToLineUp = follower.pathBuilder()
                 .addPath(startsAndGoingToLineUp)
@@ -52,4 +51,4 @@ public class BlueParkingAutoRoute extends OpMode {
 
 
 
-    }}
+    }}}
