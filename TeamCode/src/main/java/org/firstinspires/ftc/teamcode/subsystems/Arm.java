@@ -7,8 +7,7 @@ public class Arm {
         HOME(0),
         LOW(0.1),
         MEDIUM(0.153),
-        HIGH(0.194),
-        POLE(0.2);
+        HIGH(0.194);
         public final double value;
         ArmPosition(double m_position){
             this.value = m_position;
@@ -20,15 +19,11 @@ public class Arm {
 
     public Arm(Servo m_srvArm) {
         srvArm = m_srvArm;
-        goToPosition(ArmPosition.HOME);
+       // goToPosition(ArmPosition.HOME);
     }
 
     public void goToPosition(ArmPosition m_enumArmPosition) {
         enuArmPosition = m_enumArmPosition;
         srvArm.setPosition(enuArmPosition.value);
-    }
-
-    public ArmPosition getPosition() {
-        return enuArmPosition;
     }
 }

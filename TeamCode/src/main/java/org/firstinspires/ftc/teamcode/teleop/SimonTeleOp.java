@@ -17,6 +17,8 @@ public class SimonTeleOp extends OpMode {
     public DcMotor backRightMotor;
     public Intake intakeSubsystem;
     public Arm armSubsystem;
+    Gamepad currentGamepad;
+    Gamepad previousGamepad;
     @Override
     public void init(){
         frontLeftMotor = hardwareMap.dcMotor.get("leftFront");
@@ -25,30 +27,31 @@ public class SimonTeleOp extends OpMode {
         backRightMotor = hardwareMap.dcMotor.get("rightRear");
         intakeSubsystem = new Intake(hardwareMap.servo.get("intake"));
         armSubsystem = new Arm(hardwareMap.servo.get("arm"));
+        currentGamepad = new Gamepad();
+        previousGamepad = new Gamepad();
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
     public void loop(){
+        previousGamepad.copy(currentGamepad);
+        currentGamepad.copy(gamepad2);
 
-        if(gamepad1.aWasPressed()){
+        if(currentGamepad.a && !previousGamepad.a){
             armSubsystem.goToPosition(Arm.ArmPosition.HOME);
         }
 
-        if(gamepad1.bWasPressed()){
+        if(currentGamepad.b && !previousGamepad.b){
             armSubsystem.goToPosition(Arm.ArmPosition.LOW);
         }
 
-        if(gamepad1.xWasPressed()){
+        if(currentGamepad.x && !previousGamepad.x){
             armSubsystem.goToPosition(Arm.ArmPosition.MEDIUM);
         }
 
-        if(gamepad1.yWasPressed()){
+        if(currentGamepad.y && !previousGamepad.y){
             armSubsystem.goToPosition(Arm.ArmPosition.HIGH);
         }
 
-        if(gamepad1.rightBumperWasPressed()){
-            armSubsystem.goToPosition(Arm.ArmPosition.POLE);
-        }
 
         double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
         double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
