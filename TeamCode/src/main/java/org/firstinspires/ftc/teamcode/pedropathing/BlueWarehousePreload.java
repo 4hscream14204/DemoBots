@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.pedropathing;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.teamcode.subsystems.Arm.ArmPosition.HIGH;
+
+import android.content.Context;
+import android.content.Intent;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -10,7 +14,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.command.Subsystem;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
+import com.seattlesolvers.solverslib.command.WaitCommand;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
+
+import org.firstinspires.ftc.teamcode.subsystems.Arm;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.teleop.SimonTeleOp;
 
 @Autonomous(name = "Blue Preload and Warehouse Park ")
 public class BlueWarehousePreload {
@@ -34,6 +45,7 @@ public class BlueWarehousePreload {
         CommandScheduler.getInstance().reset();
         follower = Constants.createFollower(hardwareMap);
 
+
         startToHub = follower.pathBuilder()
                 .addPath(startsAndGoingToLineUp)
                 .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(90))
@@ -44,14 +56,17 @@ public class BlueWarehousePreload {
                 .build();
 
         path = new SequentialCommandGroup(
+                new InstantCommand(()->Intake),
                 new FollowPathCommand(follower, startToHub, true, 1),
-                new InstantCommand())->
+                new InstantCommand(()->Arm.ArmPosition.HIGH),
+                new InstantCommand(()->Intake),
+                new WaitCommand(500),
+                new InstantCommand(()->Arm.ArmPosition.HOME),
                 new FollowPathCommand(follower, parksInZone, true, 1)
         );
     }
-
     @Override
-    public void start() {
+    public void start(){
         follower.setStartingPose(startPose);
         path.schedule();
     }
