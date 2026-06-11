@@ -18,12 +18,13 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 import org.firstinspires.ftc.teamcode.subsystems.Arm;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
-public class BlueStoragePreload {
-}
+
 @Autonomous(name = "Blue Preload and Storage Park ")
-public class BlueWarehousePreload {
+public class BlueStoragePreload {
     Follower follower;
     SequentialCommandGroup path;
+    Arm arm;
+    Intake intake;
 
 
     Pose startPose = new Pose(5, 35, Math.toRadians(0));
@@ -53,14 +54,13 @@ public class BlueWarehousePreload {
                 .build();
 
         path = new SequentialCommandGroup(
-                new InstantCommand(()-> hardwareMap.get(Intake.class,Intake,1)),
+                new InstantCommand(() -> intake.intake(-1)),
                 new FollowPathCommand(follower, startToHub, true, 1),
-                new InstantCommand(()-> hardwareMap.get(Arm.class,Arm, Arm.ArmPosition,HIGH)),
-                new InstantCommand(()-> hardwareMap.get(Intake.class,Intake,1)),
+                new InstantCommand(() -> arm.goToPosition(HIGH),
+                new InstantCommand(() -> intake.intake(-1)),
                 new WaitCommand(500),
-                new InstantCommand(()-> hardwareMap.get(Arm.class, Arm.ArmPosition,HOME)),
-                new FollowPathCommand(follower, parksInZone, true, 1)
-        );
+                new InstantCommand(() -> arm.goToPosition(HOME)),
+                new FollowPathCommand(follower, parksInZone, true, 1);
     }
     @Override
     public void start(){
