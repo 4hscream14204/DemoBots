@@ -17,22 +17,23 @@ import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 public class BlueParkInWhiteBox extends OpMode {
 
    Follower follower;
-    SequentialCommandGroup path;
+   SequentialCommandGroup path;
 
-    Pose startPose = new Pose(5,89, Math.toRadians(0));
-    Pose endPose = new Pose(5,134,Math.toRadians(0));
+    Pose startPose = new Pose(5,89, Math.toRadians(90));
+    Pose endPose = new Pose(5,134,Math.toRadians(90));
 
     BezierLine goesToParkInZone = new BezierLine(startPose,endPose);
 
     PathChain startToPark;
-        @Override
+
+    @Override
         public void init() {
             CommandScheduler.getInstance().reset();
             follower = Constants.createFollower(hardwareMap);
 
         startToPark = follower.pathBuilder()
                 .addPath(goesToParkInZone)
-                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(90))
                 .build();
 
         path = new SequentialCommandGroup(
