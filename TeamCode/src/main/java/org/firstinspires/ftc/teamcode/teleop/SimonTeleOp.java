@@ -72,7 +72,7 @@ public class SimonTeleOp extends OpMode {
 
         telemetry.addLine("Left Stick - Move");
         telemetry.addLine("Right Stick - Turn");
-        telemetry.addLine("Left Trigger - Outtake. Right Trigger - Intake");
+        telemetry.addLine("Left Trigger - Intake. Right Trigger - Outtake");
         telemetry.addLine("A - Home arm");
         telemetry.addLine("B - Low goal");
         telemetry.addLine("X - Mid Goal");
