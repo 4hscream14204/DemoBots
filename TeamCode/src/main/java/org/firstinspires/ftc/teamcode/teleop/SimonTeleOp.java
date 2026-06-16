@@ -70,6 +70,8 @@ public class SimonTeleOp extends OpMode {
 
         intakeSubsystem.intake(gamepad1.left_trigger / 2 + -1 * gamepad1.right_trigger / 2 + 0.5);
 
+        //I am adding this to confirm I can commit to the repository
+
 
     }
 }
