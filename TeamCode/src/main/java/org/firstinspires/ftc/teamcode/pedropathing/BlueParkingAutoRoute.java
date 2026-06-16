@@ -13,7 +13,7 @@ import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 
 
 @Autonomous(name = "Park In Blue Zone")
-public class BlueParkingAutoRoute {
+public class BlueParkingAutoRoute extends OpMode{
 
     Follower follower;
     SequentialCommandGroup path;
@@ -51,4 +51,9 @@ public class BlueParkingAutoRoute {
 
 
 
-    }}
+    }
+
+    public void loop(){
+
+    }
+}

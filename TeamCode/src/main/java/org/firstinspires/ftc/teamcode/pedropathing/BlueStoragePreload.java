@@ -9,6 +9,7 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.InstantCommand;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 
 
 @Autonomous(name = "Blue Preload and Storage Park ")
-public class BlueStoragePreload {
+public class BlueStoragePreload extends OpMode {
     Follower follower;
     SequentialCommandGroup path;
     Arm arm;
@@ -56,11 +57,12 @@ public class BlueStoragePreload {
         path = new SequentialCommandGroup(
                 new InstantCommand(() -> intake.intake(-1)),
                 new FollowPathCommand(follower, startToHub, true, 1),
-                new InstantCommand(() -> arm.goToPosition(HIGH),
+                new InstantCommand(() -> arm.goToPosition(HIGH)),
                 new InstantCommand(() -> intake.intake(-1)),
                 new WaitCommand(500),
                 new InstantCommand(() -> arm.goToPosition(HOME)),
-                new FollowPathCommand(follower, parksInZone, true, 1);
+                new FollowPathCommand(follower, parksInZone, true, 1)
+        );
     }
     @Override
     public void start(){

@@ -34,7 +34,7 @@ public class SimonTeleOp extends OpMode {
     }
     public void loop(){
         previousGamepad.copy(currentGamepad);
-        currentGamepad.copy(gamepad2);
+        currentGamepad.copy(gamepad1);
 
         if(currentGamepad.a && !previousGamepad.a){
             armSubsystem.goToPosition(Arm.ArmPosition.HOME);
@@ -70,8 +70,13 @@ public class SimonTeleOp extends OpMode {
 
         intakeSubsystem.intake(gamepad1.left_trigger / 2 + -1 * gamepad1.right_trigger / 2 + 0.5);
 
-        //I am adding this to confirm I can commit to the repository
-
+        telemetry.addLine("Left Stick - Move");
+        telemetry.addLine("Right Stick - Turn");
+        telemetry.addLine("Left Trigger - Outtake. Right Trigger - Intake");
+        telemetry.addLine("A - Home arm");
+        telemetry.addLine("B - Low goal");
+        telemetry.addLine("X - Mid Goal");
+        telemetry.addLine("Y - High Goal");
 
     }
 }
