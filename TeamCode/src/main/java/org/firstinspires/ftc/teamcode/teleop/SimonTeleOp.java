@@ -31,6 +31,15 @@ public class SimonTeleOp extends OpMode {
         previousGamepad = new Gamepad();
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        telemetry.addLine("Left Stick - Move");
+        telemetry.addLine("Right Stick - Turn");
+        telemetry.addLine("Left Trigger - Outtake. Right Trigger - Intake");
+        telemetry.addLine("A - Home arm");
+        telemetry.addLine("B - Low goal");
+        telemetry.addLine("X - Mid Goal");
+        telemetry.addLine("Y - High Goal");
+
     }
     public void loop(){
         previousGamepad.copy(currentGamepad);
@@ -70,13 +79,7 @@ public class SimonTeleOp extends OpMode {
 
         intakeSubsystem.intake(gamepad1.left_trigger / 2 + -1 * gamepad1.right_trigger / 2 + 0.5);
 
-        telemetry.addLine("Left Stick - Move");
-        telemetry.addLine("Right Stick - Turn");
-        telemetry.addLine("Left Trigger - Intake. Right Trigger - Outtake");
-        telemetry.addLine("A - Home arm");
-        telemetry.addLine("B - Low goal");
-        telemetry.addLine("X - Mid Goal");
-        telemetry.addLine("Y - High Goal");
+
 
     }
 }
