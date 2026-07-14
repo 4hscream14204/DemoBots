@@ -1,19 +1,18 @@
-package org.firstinspires.ftc.teamcode.teleop;
+package org.firstinspires.ftc.teamcode.opmode.teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-@Disabled
-@TeleOp(name = "Simon Tank")
-public class SimonTank extends OpMode {
+
+@TeleOp(name = "Motor Config")
+public class MotorConfigTest extends OpMode {
     public DcMotor frontLeftMotor;
     public DcMotor backLeftMotor;
     public DcMotor frontRightMotor;
     public DcMotor backRightMotor;
     @Override
-    public void init(){
+    public void init() {
         frontLeftMotor = hardwareMap.dcMotor.get("leftFront");
         frontRightMotor = hardwareMap.dcMotor.get("rightFront");
         backLeftMotor = hardwareMap.dcMotor.get("leftRear");
@@ -23,18 +22,24 @@ public class SimonTank extends OpMode {
     }
 
     @Override
-    public void loop(){
-        double leftPower = -gamepad1.left_stick_y;
-        double rightPower = -gamepad1.right_stick_y;
-        double largest = 1;
-        largest = Math.max(largest, Math.abs(leftPower));
-        largest = Math.max(largest, Math.abs(rightPower));
-
-        frontLeftMotor.setPower(leftPower / largest);
-        frontRightMotor.setPower(rightPower / largest);
-        backLeftMotor.setPower(leftPower / largest);
-        backRightMotor.setPower(rightPower / largest);
-
-
+    public void loop() {
+        if(gamepad1.aWasPressed()){
+            frontLeftMotor.setPower(1);
+        }
+        if(gamepad1.bWasPressed()){
+            frontRightMotor.setPower(1);
+        }
+        if(gamepad1.xWasPressed()){
+            backLeftMotor.setPower(1);
+        }
+        if(gamepad1.yWasPressed()){
+            backRightMotor.setPower(1);
+        }
+        if(gamepad1.leftBumperWasPressed()){
+            frontLeftMotor.setPower(0);
+            frontRightMotor.setPower(0);
+            backLeftMotor.setPower(0);
+            backRightMotor.setPower(0);
+        }
     }
 }
