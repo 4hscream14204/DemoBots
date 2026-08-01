@@ -14,19 +14,20 @@ public class Chassis {
     double backLeftPower;
     double backRightPower;
 
-    public Chassis(DcMotor m_frontLeftMotor, DcMotor m_frontRightMotor, DcMotor m_backLeftMotor, DcMotor m_backRightMotor)}
-frontLeftMotor = m_frontLeftMotor;
-frontRightMotor = m_frontRightMotor;
-backLeftMotor = m_backLeftMotor;
-backRightMotor = m_backLeftMotor;
+    public Chassis(DcMotor m_frontLeftMotor, DcMotor m_frontRightMotor, DcMotor m_backLeftMotor, DcMotor m_backRightMotor) {
+        frontLeftMotor = m_frontLeftMotor;
+        frontRightMotor = m_frontRightMotor;
+        backLeftMotor = m_backLeftMotor;
+        backRightMotor = m_backLeftMotor;
 
-frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-backRightMotor.setZeroPowerBehvior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
 
 public void drive(double m_gamepadLSX, double m_gamepadLSY, double m_gamepadRSX, double botHeadingRad, boolean m_isFieldCentric){
     if(m_isFieldCentric){
@@ -54,5 +55,5 @@ else {
 frontLeftMotor.setPower(frontLeftPower);
 frontRightMotor.setPower(frontRightPower);
 backLeftMotor.setPower(backLeftPower);
-bacKRightMotor.setPower(backRightPower);
-}
+backRightMotor.setPower(backRightPower);
+}}
