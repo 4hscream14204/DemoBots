@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.pedropathing;
 
 import com.pedropathing.control.FilteredPIDFCoefficients;
 import com.pedropathing.control.PIDFCoefficients;
+import com.pedropathing.control.PredictiveBrakingCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -25,31 +26,31 @@ public class Constants {
             .useSecondaryHeadingPIDF(false)
             .useSecondaryDrivePIDF(false)
             .centripetalScaling(0.001)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0))
+            .predictiveBrakingCoefficients(new PredictiveBrakingCoefficients(0.1, 0.07447, 0.0030));
+            /*.translationalPIDFCoefficients(new PIDFCoefficients(0.1, 0, 0.01, 0))
             .headingPIDFCoefficients(new PIDFCoefficients(2, 0, 0.1, 0))
             .drivePIDFCoefficients(
-                    new FilteredPIDFCoefficients(0.012, 0, 0.000012, 0.6, 0)
-            );
+                    new FilteredPIDFCoefficients(0.012, 0, 0.000012, 0.6, 0)*/
 
     public static MecanumConstants driveConstants = new MecanumConstants()
-            .leftFrontMotorName("leftFront")
-            .leftRearMotorName("leftRear")
-            .rightFrontMotorName("rightFront")
-            .rightRearMotorName("rightRear")
+            .leftFrontMotorName("frontLeftMotor")
+            .leftRearMotorName("frontRightMotor")
+            .rightFrontMotorName("backLeftMotor")
+            .rightRearMotorName("backRightMotor")
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(46.5)
-            .yVelocity(37.6);
+            .xVelocity(24.8)
+            .yVelocity(33.9);
 
     public static OTOSConstants localizerConstants = new OTOSConstants()
             .hardwareMapName("sensor_otos")
             .linearUnit(DistanceUnit.INCH)
             .angleUnit(AngleUnit.RADIANS)
             .offset(new SparkFunOTOS.Pose2D(0.18, 2.18, 0))
-            .linearScalar(0.98)
-            .angularScalar(0.9824);
+            .linearScalar(0.42)
+            .angularScalar(0.9833);
 
     public static PathConstraints pathConstraints = new PathConstraints(
             0.995,
