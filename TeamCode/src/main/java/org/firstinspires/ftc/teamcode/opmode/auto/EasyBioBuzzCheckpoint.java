@@ -72,7 +72,7 @@ public class EasyBioBuzzCheckpoint extends OpMode {
     BezierCurve checkpointFour = new BezierCurve(
             new Pose (130, 85), //0
             new Pose (137, 139),
-            new Pose (108, 129)
+            new Pose (108, 129) //180
             //path 8
     );
 
@@ -93,9 +93,10 @@ PathChain completeCheckpointOne; // does path 1 + 2
 PathChain curveCheckTwo; // does just path 3
 PathChain doTwo; // intakes on path 4
 PathChain checkThree; //path5 goes to check point 3
-PathChain doFour; // combines path 6 , 7 , 8
+PathChain doFour; // combines path 6 , 7 ,
+PathChain doFourAgain; // path 8
 PathChain doFive; // path 9
-PathChain Finish; // path 10
+PathChain finished; // path 10
 
 
 
@@ -130,6 +131,18 @@ PathChain Finish; // path 10
                 .addPath(alsoGoingToCheckpointFour)
                 .setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(0))
                 .build();
+        doFourAgain = follower.pathBuilder()
+                .addPath(checkpointFour)
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(180))
+                .build();
+        doFive = follower.pathBuilder()
+                .addPath(checkpointFive)
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(270))
+                .build();
+        finished = follower.pathBuilder()
+                .addPath(finish)
+                .setConstantHeadingInterpolation(Math.toRadians(270))
+                .build();
 
         path = new SequentialCommandGroup(
                 new FollowPathCommand(follower,completeCheckpointOne, true, 1),
@@ -138,10 +151,6 @@ PathChain Finish; // path 10
 
 
         );
-
-
-
-
 
     }
 
