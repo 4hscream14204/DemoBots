@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
 import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
-import com.sun.tools.javac.code.Attribute;
+
 
 import org.firstinspires.ftc.teamcode.base.RobotBase;
 import org.firstinspires.ftc.teamcode.pedropathing.Constants;
@@ -21,80 +21,97 @@ public class EasyBioBuzzCheckpoint extends OpMode {
     RobotBase robotBase;
     SequentialCommandGroup path;
 
-    Pose startPose = new Pose(10, 10, Math.toRadians(90));
+    Pose startPose = new Pose(13, 13, Math.toRadians(90));
 
-    Pose endPose = new Pose(82, 10, Math.toRadians(180));
+    Pose endPose = new Pose(103, 11, Math.toRadians(180));
 
     BezierLine goingToCheckpointOne = new BezierLine(
             startPose, //90
-            new Pose(43, 31) //180
+            new Pose(41, 13) //90
             //path1
     );
 
-    BezierLine checkpointOne = new BezierLine (
-            new Pose(43, 31), //90
-            new Pose (15, 58) //143
+    BezierLine checkpointOnePointFive = new BezierLine(
+            new Pose(41, 13), //90
+            new Pose(41, 70) //180
             //path2
     );
 
-    BezierCurve goingToCheckpointTwo = new BezierCurve(
-            new Pose (15, 58), //90
-            new Pose (2, 116),
-            new Pose (15,128) //0
+    BezierLine checkpointOne = new BezierLine (
+            new Pose(41, 70), //180
+            new Pose (20, 70) //180
             //path3
     );
 
-    BezierLine checkpointTwo = new BezierLine(
-            new Pose (15,128), //0
-            new Pose (35, 129) //0
+    BezierLine goingToCheckpointTwo = new BezierLine(
+            new Pose (20, 70), //180
+            new Pose (20,129) //0
             //path4
     );
 
-    BezierCurve CheckpointThree = new BezierCurve(
-            new Pose (35, 129), //0
-            new Pose (93, 104),
-            new Pose (84,59) //270
+    BezierLine checkpointTwo = new BezierLine(
+            new Pose (20,129), //0
+            new Pose (37, 129) //0
             //path5
     );
 
+    BezierLine goingCheckpointThree = new BezierLine(
+            new Pose (37, 129), //
+            new Pose (82,85) //270
+            //path6
+    );
+
+    BezierLine CheckpointThree = new BezierLine(
+            new Pose (82, 85),
+            new Pose (82, 70)
+            //path7
+    );
     BezierLine goingToCheckpointFour = new BezierLine(
-            new Pose (84,59), //270
-            new Pose (91, 81) //270
-            //path 6
-    );
-
-    BezierLine alsoGoingToCheckpointFour = new BezierLine(
-            new Pose (91, 81), //270
-            new Pose (130, 85) //0
-            //path 7
-    );
-
-    BezierCurve checkpointFour = new BezierCurve(
-            new Pose (130, 85), //0
-            new Pose (137, 139),
-            new Pose (108, 129) //180
+            new Pose (82,70), //270
+            new Pose (91, 82) //270
             //path 8
     );
 
+    BezierLine alsoGoingToCheckpointFour = new BezierLine(
+            new Pose (91, 82), //270
+            new Pose (127, 83) //0
+            //path 9
+    );
+
+    BezierLine stillCheckpointFour = new BezierLine(
+            new Pose (127, 83), //0
+            new Pose (126, 131) //180
+            //path 10
+    );
+
+    BezierLine checkpointFour = new BezierLine(
+            new Pose (126, 131), //0
+            new Pose (110, 131) //180
+            //path 11
+    );
+
+    BezierLine goingToCheckpointFive(
+      new Pose (110, 131),
+      new Pose (126, 131)
+        //path 12
+    );
 
     BezierCurve checkpointFive = new BezierCurve(
-            new Pose (108, 129), //180
-            new Pose (137, 139),
-            new Pose (132,9) //180
-            // path 9
+            new Pose (126, 131), //180
+            new Pose (129,11) //180
+            // path 13
     );
 
     BezierLine finish = new BezierLine(
-            new Pose (132, 9),
+            new Pose (129, 11),
             endPose
+            //path 14
     );
 
-PathChain completeCheckpointOne; // does path 1 + 2
-PathChain curveCheckTwo; // does just path 3
+PathChain completeCheckpointOne; // does path 1 + 1.5 + 2
 PathChain doTwo; // intakes on path 4
 PathChain checkThree; //path5 goes to check point 3
 PathChain doFour; // combines path 6 , 7 ,
-PathChain doFourAgain; // path 8
 PathChain doFive; // path 9
 PathChain finished; // path 10
 
@@ -107,35 +124,41 @@ PathChain finished; // path 10
 
         completeCheckpointOne = follower.pathBuilder()
                 .addPath(goingToCheckpointOne)
-                .setConstantHeadingInterpolation(startPose.getHeading())
+                .setLinearHeadingInterpolation(startPose.getHeading(), Math.toRadians(180))
+                .addPath(checkpointOnePointFive)
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(checkpointOne)
-                .setLinearHeadingInterpolation(startPose.getHeading(), Math.toRadians(143))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
-        curveCheckTwo = follower.pathBuilder()
-                .addPath(goingToCheckpointTwo)
-                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(0))
-                .build();
+
         doTwo = follower.pathBuilder()
+                .addPath(goingToCheckpointTwo)
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(0))
                 .addPath(checkpointTwo)
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(0))
                 .build();
 
         checkThree = follower.pathBuilder()
+                .addPath(goingCheckpointThree)
+                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(270))
                 .addPath(CheckpointThree)
-                .setLinearHeadingInterpolation(Math.toRadians(0) , Math.toRadians(270))
+                .setConstantHeadingInterpolation(Math.toRadians(270))
                 .build();
+
         doFour = follower.pathBuilder()
                 .addPath(goingToCheckpointFour)
                 .setConstantHeadingInterpolation(Math.toRadians(270))
                 .addPath(alsoGoingToCheckpointFour)
-                .setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(0))
-                .build();
-        doFourAgain = follower.pathBuilder()
+                .setLinearHeadingInterpolation(Math.toRadians(270), Math.toRadians(180))
+                .addPath(stillCheckpointFour)
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .addPath(checkpointFour)
-                .setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(180))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
+
         doFive = follower.pathBuilder()
+                .addPath(goingToCheckpointFive)
                 .addPath(checkpointFive)
                 .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(270))
                 .build();
@@ -145,10 +168,13 @@ PathChain finished; // path 10
                 .build();
 
         path = new SequentialCommandGroup(
-                new FollowPathCommand(follower,completeCheckpointOne, true, 1),
-                new FollowPathCommand(follower, curveCheckTwo, true, 1),
-                new FollowPathCommand(follower, doTwo, false, 1)
-
+                new FollowPathCommand(follower,completeCheckpointOne, false, 1),
+                new FollowPathCommand(follower, doTwo, true, 1),
+                new FollowPathCommand(follower, checkThree, true, 1)
+                ,new FollowPathCommand(follower, doFour, true, 1)
+                 ,new FollowPathCommand(follower, doFourAgain, true, 1)
+                // new FollowPathCommand(follower, doFive, true, 1),
+// new FollowPathCommand(follower, finished, true, 1)
 
         );
 

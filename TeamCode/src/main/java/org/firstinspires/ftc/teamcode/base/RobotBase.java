@@ -17,10 +17,10 @@ public class RobotBase {
 
     public RobotBase(HardwareMap hwMap){
         chassisSubSystem = new Chassis(
-                hwMap.dcMotor.get("frontLeftMotor"),
-                hwMap.dcMotor.get("frontRightMotor"),
-                hwMap.dcMotor.get("backLeftMotor"),
-                hwMap.dcMotor.get("backRightMotor"));
+                hwMap.dcMotor.get("leftFront"),
+                hwMap.dcMotor.get("rightFront"),
+                hwMap.dcMotor.get("rightRear"),
+                hwMap.dcMotor.get("leftRear"));
 
        armSubSystem = new Arm(hwMap.servo.get("armServo"));
        intakeSubSystem = new Intake(hwMap.servo.get("intakeServo"));
