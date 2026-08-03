@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.seattlesolvers.solverslib.command.CommandScheduler;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
+import com.seattlesolvers.solverslib.pedroCommand.FollowPathCommand;
 
 import org.firstinspires.ftc.teamcode.Base.RobotBase;
 import org.firstinspires.ftc.teamcode.pedropathing.Constants;
@@ -24,47 +25,46 @@ public class EasyBioBuzzCheckpoint extends OpMode {
     BezierLine GoingToPoseOne = new BezierLine(
             startPose, //90
            new Pose (38, 34));
-    BezierLine GoingToCheckpointOne = new BezierLine(
-            new Pose (38, 34),
-            new Pose (13, 59));
+    BezierLine GoingToPoseTwo = new BezierLine(
+            new Pose (38, 9),
+            new Pose (39, 62));
+     BezierLine GoingToCheckpointOne = new BezierLine(
+             new Pose (39, 62),
+             new Pose (12, 62));
 
 BezierLine GoingToPoseThree = new BezierLine(
-        new Pose (13,59),
-        new Pose (15,128));
+        new Pose (12,62),
+        new Pose (12,127));
 
 BezierLine GoingToCheckpointTwo = new BezierLine(
-        new Pose (15, 128),
-        new Pose (36,129));
+        new Pose (12, 127),
+        new Pose (35,127));
 
 BezierCurve GoingToCheckpointThree = new BezierCurve(
-        new Pose (36,129),
-    new Pose (89,110),
-    new Pose (82, 59));
+        new Pose (35,127),
+    new Pose (76,110),
+    new Pose (71, 68));
 
 BezierCurve GoingToPoseSix = new BezierCurve(
-       new Pose (82,59),
-        new Pose (85,85),
-        new Pose (106,84));
-
-     BezierLine GoingToPoseSeven = new BezierLine(
-             new Pose (106,84),
-             new Pose(127,84));
+       new Pose (71,68),
+        new Pose (93,90),
+        new Pose (117,84));
 
      BezierCurve GoingToCheckpointFour = new BezierCurve(
-             new Pose (127,84),
-        new Pose(134,134),
-        new Pose(105,128));
+             new Pose (117,84),
+        new Pose(140,140),
+        new Pose(105,138));
      BezierCurve GoingToPoseNine = new BezierCurve(
-             new Pose (105,128),
-             new Pose(136,136),
-             new Pose(127,83));
+             new Pose (105,138),
+             new Pose(140,140),
+             new Pose(117,84));
 
      BezierLine GoingToCheckpointFive = new BezierLine(
-             new Pose (127,83),
-             new Pose(130,13));
+             new Pose (117,84),
+             new Pose(125,12));
 
      BezierLine GoingToEndPose = new BezierLine(
-             new Pose(130,13),
+             new Pose(125,12),
             endPose); //270
 
      PathChain FinishCheckpointOne;
@@ -72,7 +72,6 @@ BezierCurve GoingToPoseSix = new BezierCurve(
      PathChain FinishCheckpointThree;
      PathChain FinishPoseSix;
      PathChain FinishCheckpointFour;
-     PathChain FinishPoseSeven;
      PathChain FinishPoseNine;
      PathChain FinishCheckpointFive;
      PathChain FinishCourse;
@@ -87,15 +86,17 @@ BezierCurve GoingToPoseSix = new BezierCurve(
         FinishCheckpointOne = follower.pathBuilder()
                 .addPath(GoingToPoseOne)
                 .setConstantHeadingInterpolation(Math.toRadians(90))
+                .addPath(GoingToPoseTwo)
+                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
                 .addPath(GoingToCheckpointOne)
-                .setLinearHeadingInterpolation(startPose.getHeading(),Math.toRadians(180))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
         FinishCheckpointTwo = follower.pathBuilder()
                 .addPath(GoingToPoseThree)
-                .setConstantHeadingInterpolation(Math.toRadians(90))
+                .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(0))
                 .addPath(GoingToCheckpointTwo)
-                .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
+                .setConstantHeadingInterpolation(Math.toRadians(0))
                 .build();
 
         FinishCheckpointThree = follower.pathBuilder()
@@ -113,11 +114,6 @@ BezierCurve GoingToPoseSix = new BezierCurve(
                 .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build();
 
-        FinishPoseSeven = follower.pathBuilder()
-                .addPath(GoingToPoseSeven)
-                .setConstantHeadingInterpolation(Math.toRadians(270))
-                .build();
-
         FinishPoseNine = follower.pathBuilder()
                 .addPath(GoingToPoseNine)
                 .setConstantHeadingInterpolation(Math.toRadians(270))
@@ -133,7 +129,16 @@ BezierCurve GoingToPoseSix = new BezierCurve(
                 .setConstantHeadingInterpolation(Math.toRadians(270))
                 .build();
 
-        path = new SequentialCommandGroup();
+        path = new SequentialCommandGroup(
+                new FollowPathCommand(follower,FinishCheckpointOne, true, 1),
+                new FollowPathCommand(follower, FinishCheckpointTwo, true, 1),
+                new FollowPathCommand(follower, FinishCheckpointThree, true, 1),
+               new FollowPathCommand(follower, FinishPoseSix, true, 1),
+                new FollowPathCommand(follower, FinishCheckpointFour, true, 1),
+                new FollowPathCommand(follower, FinishPoseNine, true, 1),
+                new FollowPathCommand(follower, FinishCheckpointFive, true, 1),
+                new FollowPathCommand(follower, FinishCourse, true, 1)
+        );
     }
     @Override
     public void start(){
