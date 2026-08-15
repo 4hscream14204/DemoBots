@@ -16,4 +16,8 @@ import com.qualcomm.robotcore.hardware.Servo;
             }
         }
 
+        public Wrist (Servo m_wristServo) {
+             wristServo = m_wristServo;
+        }
+
     }
