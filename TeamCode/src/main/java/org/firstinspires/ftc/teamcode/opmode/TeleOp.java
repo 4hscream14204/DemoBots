@@ -15,7 +15,6 @@ public class TeleOp extends OpMode {
 
     @Override
     public void init() {
-    drive.init(hardwareMap);
 
     imu = hardwareMap.get(IMU.class, "h");
         RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
