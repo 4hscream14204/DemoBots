@@ -11,8 +11,9 @@ import com.qualcomm.robotcore.hardware.Servo;
          public enum wristPosition {
             HOME(0.25),
              OUTTAKE(0.3);
+            public final double value;
             wristPosition(double m_position){
-                double position = m_position;
+                 value = m_position;
             }
         }
 
@@ -20,4 +21,7 @@ import com.qualcomm.robotcore.hardware.Servo;
              wristServo = m_wristServo;
         }
 
+        public void goToPosition(wristPosition position) {
+             wristServo.setPosition(position.value);
+        }
     }

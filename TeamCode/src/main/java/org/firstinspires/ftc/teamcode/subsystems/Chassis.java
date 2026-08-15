@@ -11,17 +11,27 @@ public class Chassis {
     DcMotor backLeftMotor;
     DcMotor backRightMotor;
 
+    SparkFunOTOS otos;
 
-    double frontLeftPower;
-    double frontRightPower;
-    double backLeftPower;
-    double backRightPower;
+    double dblFrontLeftPower;
+    double dblFrontRightPower;
+    double dblBackLeftPower;
+    double dblBackRightPower;
+    public boolean bolFieldCentric;
 
-    public  Chassis (DcMotor m_frontLeftMotor , DcMotor m_frontRightMotor , DcMotor m_backLeftMotor , DcMotor m_backRightMotor) {
+    double leftStickX;
+    double leftStickY;
+    double rotationPower;
+    double botHeading;
+    SparkFunOTOS.Pose2D botPose;
+    double dblDenominator;
+
+    public  Chassis (DcMotor m_frontLeftMotor , DcMotor m_frontRightMotor , DcMotor m_backLeftMotor , DcMotor m_backRightMotor, SparkFunOTOS m_otos) {
         frontLeftMotor = m_frontLeftMotor;
         frontRightMotor = m_frontRightMotor;
         backLeftMotor = m_backLeftMotor;
         backRightMotor = m_backRightMotor;
+        otos = m_otos;
 
         frontLeftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -32,42 +42,34 @@ public class Chassis {
         backLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
+    public void drive(double m_leftStickX, double m_leftStickY, double m_rightStickX){
+        leftStickX = (m_leftStickY * Math.abs(m_leftStickY) * -1);
+        leftStickY = m_leftStickX * Math.abs(m_leftStickX);
+        rotationPower = m_rightStickX * Math.abs(m_rightStickX);
+        botPose = otos.getPosition();
+        botHeading = botPose.h + Math.toRadians(90);
 
-    public void setPowers(double p_frontLeftPower , double p_frontRightPower, double p_backLeftPower, double p_backRightPower) {
+        if(bolFieldCentric){
+            double rotX = leftStickX * Math.cos(-botHeading) - leftStickY * Math.sin(-botHeading);
+            double rotY = leftStickX * Math.sin(-botHeading) + leftStickY * Math.cos(-botHeading);
 
-        double maxSpeed = 1.0;
-
-        backLeftPower = p_backLeftPower;
-        backRightPower = p_backRightPower;
-        frontLeftPower = p_frontLeftPower;
-        frontRightPower = p_frontRightPower;
-
-        maxSpeed = Math.max(maxSpeed, Math.abs(frontLeftPower));
-        maxSpeed = Math.max(maxSpeed, Math.abs(frontRightPower));
-        maxSpeed = Math.max(maxSpeed, Math.abs(backLeftPower));
-        maxSpeed = Math.max(maxSpeed, Math.abs(backRightPower));
-
-        frontLeftPower /= maxSpeed;
-        frontRightPower /= maxSpeed;
-        backLeftPower /= maxSpeed;
-        backRightPower /= maxSpeed;
-
-        frontLeftMotor.setPower(frontLeftPower);
-        frontRightMotor.setPower(frontRightPower);
-        backLeftMotor.setPower(backLeftPower);
-        backRightMotor.setPower(backRightPower);
-
-    }
-
-    public void drive(double forward, double right, double rotate) {
-        double frontLeftPower = forward + right + rotate;
-        double frontRightPower = forward - right - rotate;
-        double backLeftPower = forward - right + rotate;
-        double backRightPower = forward + right - rotate;
-
-
-        setPowers(frontLeftPower, frontRightPower, backLeftPower, backRightPower);
-
+            dblDenominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rotationPower), 1);
+            dblFrontLeftPower = (rotY + rotX + rotationPower) / dblDenominator;
+            dblBackLeftPower = (rotY - rotX + rotationPower) / dblDenominator;
+            dblFrontRightPower = (rotY - rotX - rotationPower) / dblDenominator;
+            dblBackRightPower = (rotY + rotX - rotationPower) / dblDenominator;
+        }
+        else{
+            dblDenominator = Math.max(Math.abs(leftStickX) + Math.abs(leftStickX) + Math.abs(rotationPower), 1);
+            dblFrontLeftPower = (leftStickY + leftStickX + rotationPower) / dblDenominator;
+            dblBackLeftPower = (leftStickY - leftStickX + rotationPower) / dblDenominator;
+            dblFrontRightPower = (leftStickY - leftStickX - rotationPower) / dblDenominator;
+            dblBackRightPower = (leftStickY + leftStickX - rotationPower) / dblDenominator;
+        }
+        frontLeftMotor.setPower(dblFrontLeftPower);
+        frontRightMotor.setPower(dblFrontRightPower);
+        backLeftMotor.setPower(dblBackLeftPower);
+        backRightMotor.setPower(dblBackRightPower);
     }
 
 

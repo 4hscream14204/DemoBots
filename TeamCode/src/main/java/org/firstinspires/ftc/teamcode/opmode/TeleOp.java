@@ -5,43 +5,66 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.base.RobotBase;
 import org.firstinspires.ftc.teamcode.subsystems.Chassis;
+import org.firstinspires.ftc.teamcode.subsystems.Elbow;
+import org.firstinspires.ftc.teamcode.subsystems.Extension;
+import org.firstinspires.ftc.teamcode.subsystems.Wrist;
+import org.screamrobotics.SuperSCREAMLib.command.CommandScheduler;
+import org.screamrobotics.SuperSCREAMLib.command.InstantCommand;
+import org.screamrobotics.SuperSCREAMLib.command.button.Trigger;
+import org.screamrobotics.SuperSCREAMLib.gamepad.GamepadEx;
+import org.screamrobotics.SuperSCREAMLib.gamepad.GamepadKeys;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class TeleOp extends OpMode {
-
-    Chassis drive;
-    IMU imu;
+    RobotBase robotBase;
+    GamepadEx gamepadEx;
+    double chance;
 
     @Override
     public void init() {
+        robotBase = new RobotBase(hardwareMap);
+        gamepadEx = new GamepadEx(gamepad1);
+        chance = Math.random() * 100;
 
-    imu = hardwareMap.get(IMU.class, "h");
-        RevHubOrientationOnRobot revHubOrientationOnRobot = new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
-
-        imu.initialize(new IMU.Parameters(revHubOrientationOnRobot));
-    }
-
-    private void driveFieldRelative(double forward, double right, double rotate){
-        double robotAngle = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-
-        double theta = Math.atan2(forward, right);
-        double r = Math.hypot(forward, right);
-        double newForward = r * Math.sin(theta);
-        double newRight = r * Math.cos(theta);
-
-        drive.drive(newForward, newRight, rotate);
+        new Trigger(()->robotBase.extensionSubsystem.slides.areSlidesHome())
+                .whenActive(()-> CommandScheduler.getInstance().schedule(new InstantCommand(()->robotBase.extensionSubsystem.slides.reset())));
     }
 
     @Override
     public void loop() {
-        double forward = -gamepad1.left_stick_y;
-        double right = gamepad1.left_stick_x;
-        double rotate = gamepad1.right_stick_x;
+        robotBase.chassisSubSystem.drive(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX());
 
-        driveFieldRelative(forward, right, rotate);
+        if(gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {
+            robotBase.intakeSubSystem.setIntake();
+        } else if(gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) {
+            robotBase.intakeSubSystem.setOuttake();
+        } else {
+            robotBase.intakeSubSystem.setOff();
+        }
 
+        if(gamepadEx.getButton(GamepadKeys.Button.LEFT_BUMPER)) {
+            robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.HOME);
+        } else if(gamepadEx.getButton(GamepadKeys.Button.RIGHT_BUMPER)) {
+            robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.OUTTAKE);
+        }
 
-        telemetry.addData("There is a '" + Math.random() + "' percent chance that this works", "");
+        if(gamepadEx.getButton(GamepadKeys.Button.A)) {
+            robotBase.elbowSubSystem.GoToPosition(Elbow.ElbowPositions.GROUND);
+        } else if(gamepadEx.getButton(GamepadKeys.Button.B)) {
+            robotBase.elbowSubSystem.GoToPosition(Elbow.ElbowPositions.MIDDLE);
+        }
+        if(gamepadEx.getButton(GamepadKeys.Button.DPAD_UP)) {
+            robotBase.extensionSubsystem.goToPosition(Extension.slidePosition.HIGHBUCKET);
+        } else if(gamepadEx.getButton(GamepadKeys.Button.DPAD_LEFT) || gamepadEx.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
+            robotBase.extensionSubsystem.goToPosition(Extension.slidePosition.LOWBUCKET);
+        } else if(gamepadEx.getButton(GamepadKeys.Button.DPAD_DOWN)) {
+            robotBase.extensionSubsystem.goToPosition(Extension.slidePosition.HOME);
+        }
+
+        telemetry.addData("There is a '" + chance + "' percent chance that this works", "");
+        telemetry.addData("Extension Position", robotBase.extensionSubsystem.slides.getPosition());
+        telemetry.addData("Shoulder Position", robotBase.shoulderSubsystem.shoulder.getPosition());
     }
 }
