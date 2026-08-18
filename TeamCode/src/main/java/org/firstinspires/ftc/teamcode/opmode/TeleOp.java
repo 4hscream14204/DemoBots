@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.base.RobotBase;
+import org.firstinspires.ftc.teamcode.commands.HighBucketDropoffCommandGroup;
+import org.firstinspires.ftc.teamcode.commands.LowBucketDropoffCommandGroup;
 import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.Elbow;
 import org.firstinspires.ftc.teamcode.subsystems.Extension;
@@ -37,6 +39,12 @@ public class TeleOp extends OpMode {
                                 .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setOff())))
                         .whenActive(()-> CommandScheduler.getInstance()
                                 .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setIntake(((gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - (gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)) + 1 ) / 2)))));
+        new Trigger(() -> gamepadEx.getButton(GamepadKeys.Button.A))
+                .whenActive(() -> CommandScheduler.getInstance()
+                        .schedule(new LowBucketDropoffCommandGroup(robotBase)));
+        new Trigger(() -> gamepadEx.getButton(GamepadKeys.Button.Y))
+                .whenActive(() -> CommandScheduler.getInstance()
+                        .schedule(new HighBucketDropoffCommandGroup(robotBase)));
 
     }
 

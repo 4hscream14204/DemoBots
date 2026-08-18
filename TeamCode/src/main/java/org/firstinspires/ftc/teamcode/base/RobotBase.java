@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.base;
 import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.Elbow;
 import org.firstinspires.ftc.teamcode.subsystems.Extension;
+import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shoulder;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
@@ -21,6 +22,7 @@ public class RobotBase {
     public Intake intakeSubSystem;
     public Extension extensionSubsystem;
     public Shoulder shoulderSubsystem;
+    public Gate gateSubsystem;
 
     public RobotBase(HardwareMap hw) {
 
@@ -43,8 +45,6 @@ public class RobotBase {
         shoulderSubsystem = new Shoulder(new Slides(hw.get(DcMotorEx.class, "shoulderMotor"), hw.get(DcMotorEx.class, "rightShoulderMotor"), Slides.LimitSwitchUsage.YES_TRUE_WHEN_PRESSED, hw.digitalChannel.get("shoulderLimitSwitch")));
         shoulderSubsystem.shoulder.setAutomaticExtendPower(1);
         shoulderSubsystem.shoulder.setAutomaticRetractPower(-0.5);
-
+        gateSubsystem = new Gate(hw.servo.get("gateServo"));
     }
-
-
 }
