@@ -28,9 +28,9 @@ public class Intake {
         servoL.setPosition(0);
     }
 
-    public void setIntake(){
-        servoR.setPosition(0);
-        servoL.setPosition(1);
+    public void setIntake(double power){
+        servoR.setPosition(power);
+        servoL.setPosition(1 - power);
     }
 
     public void setOff(){

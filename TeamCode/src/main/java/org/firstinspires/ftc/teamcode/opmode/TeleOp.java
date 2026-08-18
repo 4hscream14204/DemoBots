@@ -30,12 +30,23 @@ public class TeleOp extends OpMode {
 
         new Trigger(()->robotBase.extensionSubsystem.slides.areSlidesHome())
                 .whenActive(()-> CommandScheduler.getInstance().schedule(new InstantCommand(()->robotBase.extensionSubsystem.slides.reset())));
+
+        new Trigger(()->gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
+                .or(new Trigger(()->gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1))
+                        .whenInactive(()-> CommandScheduler.getInstance()
+                                .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setOff())))
+                        .whenActive(()-> CommandScheduler.getInstance()
+                                .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setIntake(((gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - (gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)) + 1 ) / 2)))));
+
     }
 
     @Override
     public void loop() {
+        gamepadEx.readButtons();
         robotBase.chassisSubSystem.drive(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX());
 
+
+        /*
         if(gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {
             robotBase.intakeSubSystem.setIntake();
         } else if(gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1) {
@@ -62,6 +73,9 @@ public class TeleOp extends OpMode {
         } else if(gamepadEx.getButton(GamepadKeys.Button.DPAD_DOWN)) {
             robotBase.extensionSubsystem.goToPosition(Extension.slidePosition.HOME);
         }
+        */
+
+        CommandScheduler.getInstance().run();
 
         telemetry.addData("There is a '" + chance + "' percent chance that this works", "");
         telemetry.addData("Extension Position", robotBase.extensionSubsystem.slides.getPosition());
