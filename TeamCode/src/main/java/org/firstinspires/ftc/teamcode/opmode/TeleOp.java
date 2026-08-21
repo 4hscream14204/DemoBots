@@ -33,18 +33,34 @@ public class TeleOp extends OpMode {
         new Trigger(()->robotBase.extensionSubsystem.slides.areSlidesHome())
                 .whenActive(()-> CommandScheduler.getInstance().schedule(new InstantCommand(()->robotBase.extensionSubsystem.slides.reset())));
 
+        new Trigger(()->robotBase.shoulderSubsystem.isShoulderHome())
+                .whenActive(()-> CommandScheduler.getInstance().schedule(new InstantCommand(()->robotBase.shoulderSubsystem.reset())));
+
         new Trigger(()->gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
                 .or(new Trigger(()->gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1))
                         .whenInactive(()-> CommandScheduler.getInstance()
                                 .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setOff())))
                         .whenActive(()-> CommandScheduler.getInstance()
                                 .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setIntake(((gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - (gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)) + 1 ) / 2)))));
-        new Trigger(() -> gamepadEx.getButton(GamepadKeys.Button.A))
-                .whenActive(() -> CommandScheduler.getInstance()
-                        .schedule(new LowBucketDropoffCommandGroup(robotBase)));
-        new Trigger(() -> gamepadEx.getButton(GamepadKeys.Button.Y))
-                .whenActive(() -> CommandScheduler.getInstance()
-                        .schedule(new HighBucketDropoffCommandGroup(robotBase)));
+        gamepadEx.getGamepadButton(GamepadKeys.Button.A)
+                .whenPressed(()->CommandScheduler.getInstance().schedule(new LowBucketDropoffCommandGroup(robotBase)));
+        gamepadEx.getGamepadButton(GamepadKeys.Button.Y)
+                .whenPressed(()->CommandScheduler.getInstance().schedule(new HighBucketDropoffCommandGroup(robotBase)));
+
+        gamepadEx.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(()->CommandScheduler.getInstance()
+                        .schedule(new InstantCommand(()->robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.HOME))));
+        gamepadEx.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(()->CommandScheduler.getInstance()
+                        .schedule(new InstantCommand(()->robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.OUTTAKE))));
+        gamepadEx.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+                .whenPressed(()->CommandScheduler.getInstance()
+                        .schedule(new InstantCommand(()->robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.GROUND))));
+        gamepadEx.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                .whenPressed(()->CommandScheduler.getInstance()
+                        .schedule(new InstantCommand(()->robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.MIDDLE))));
+
+
 
     }
 
@@ -87,6 +103,6 @@ public class TeleOp extends OpMode {
 
         telemetry.addData("There is a '" + chance + "' percent chance that this works", "");
         telemetry.addData("Extension Position", robotBase.extensionSubsystem.slides.getPosition());
-        telemetry.addData("Shoulder Position", robotBase.shoulderSubsystem.shoulder.getPosition());
+        telemetry.addData("Shoulder Position", robotBase.shoulderSubsystem.shoulderGetPosition());
     }
 }

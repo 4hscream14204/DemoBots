@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
         public Servo wristServo;
          public enum wristPosition {
             HOME(0.25),
-             OUTTAKE(0.3);
+             OUTTAKE(0.05);
             public final double value;
             wristPosition(double m_position){
                  value = m_position;

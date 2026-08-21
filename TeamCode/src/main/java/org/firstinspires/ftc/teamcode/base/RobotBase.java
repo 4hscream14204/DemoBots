@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.base;
 import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.Elbow;
 import org.firstinspires.ftc.teamcode.subsystems.Extension;
+import org.firstinspires.ftc.teamcode.subsystems.FixedShoulder;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shoulder;
@@ -21,7 +22,7 @@ public class RobotBase {
     public Wrist wristSubSystem;
     public Intake intakeSubSystem;
     public Extension extensionSubsystem;
-    public Shoulder shoulderSubsystem;
+    public FixedShoulder shoulderSubsystem;
     public Gate gateSubsystem;
 
     public RobotBase(HardwareMap hw) {
@@ -42,9 +43,7 @@ public class RobotBase {
         extensionSubsystem = new Extension(new Slides(hw.get(DcMotorEx.class, "extensionLeftMotor"), hw.get(DcMotorEx.class, "extensionRightMotor"), Slides.LimitSwitchUsage.YES_TRUE_WHEN_PRESSED, hw.digitalChannel.get("extensionLimitSwitch")));
         extensionSubsystem.slides.setAutomaticExtendPower(-1);
         extensionSubsystem.slides.setAutomaticRetractPower(1);
-        shoulderSubsystem = new Shoulder(new Slides(hw.get(DcMotorEx.class, "shoulderMotor"), hw.get(DcMotorEx.class, "rightShoulderMotor"), Slides.LimitSwitchUsage.YES_TRUE_WHEN_PRESSED, hw.digitalChannel.get("shoulderLimitSwitch")));
-        shoulderSubsystem.shoulder.setAutomaticExtendPower(1);
-        shoulderSubsystem.shoulder.setAutomaticRetractPower(-0.5);
+        shoulderSubsystem = new FixedShoulder(hw.get(DcMotorEx.class, "shoulderMotor"), hw.get(DcMotorEx.class, "rightShoulderMotor"),hw.digitalChannel.get("shoulderLimitSwitch"));
         gateSubsystem = new Gate(hw.servo.get("gateServo"));
     }
 }

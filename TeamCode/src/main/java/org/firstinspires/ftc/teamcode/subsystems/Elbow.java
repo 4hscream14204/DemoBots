@@ -11,14 +11,16 @@ public class Elbow {
 
     public enum ElbowPositions {
         GROUND(1),
-        MIDDLE(0.71);
+        MIDDLE(0.71),
+
+        DROPOFF(0.73);
         public final double value;
         ElbowPositions(double m_position) {
             value = m_position;
         }
     }
 
-    public void GoToPosition(ElbowPositions position) {
+    public void goToPosition(ElbowPositions position) {
         elbow.setPosition(position.value);
     }
 }
