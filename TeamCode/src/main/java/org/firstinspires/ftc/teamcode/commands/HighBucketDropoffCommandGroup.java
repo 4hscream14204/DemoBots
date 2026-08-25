@@ -22,8 +22,9 @@ public class HighBucketDropoffCommandGroup extends SequentialCommandGroup {
                 new InstantCommand(() -> robotBase.extensionSubsystem.goToPosition(Extension.slidePosition.HIGHBUCKET)),
                 new InstantCommand(() -> robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.DROPOFF)),
                 new InstantCommand(()-> robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.OUTTAKE)),
-                new InstantCommand(() -> robotBase.gateSubsystem.goToPosition(Gate.gatePosition.OPEN)),
                 new WaitCommand(1500),
+                new InstantCommand(() -> robotBase.gateSubsystem.goToPosition(Gate.gatePosition.OPEN)),
+
                 new InstantCommand(() -> robotBase.intakeSubSystem.setOuttake()),
                 new WaitCommand(3000),
                 new InstantCommand(() -> robotBase.intakeSubSystem.setOff()),
@@ -31,7 +32,7 @@ public class HighBucketDropoffCommandGroup extends SequentialCommandGroup {
                 new InstantCommand(() -> robotBase.extensionSubsystem.goToPosition(Extension.slidePosition.HOME)),
                 new InstantCommand(()->robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.HOME)),
                 new InstantCommand(() -> robotBase.shoulderSubsystem.goToPosition(FixedShoulder.ShoulderPosition.HOME)),
-                new InstantCommand(()-> robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.GROUND))
+                new InstantCommand(()-> robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.MOVING))
         );
     }
 }

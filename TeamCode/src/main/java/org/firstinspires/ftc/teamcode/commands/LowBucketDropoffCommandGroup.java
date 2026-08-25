@@ -31,7 +31,7 @@ public class LowBucketDropoffCommandGroup extends SequentialCommandGroup {
                 new InstantCommand(() -> robotBase.extensionSubsystem.goToPosition(Extension.slidePosition.HOME)),
                 new InstantCommand(()->robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.HOME)),
                 new InstantCommand(() -> robotBase.shoulderSubsystem.goToPosition(FixedShoulder.ShoulderPosition.HOME)),
-                new InstantCommand(()-> robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.GROUND))
+                new InstantCommand(()-> robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.MOVING))
         );
     }
 }

@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.IMU;
+import static org.firstinspires.ftc.teamcode.subsystems.Elbow.ElbowPositions.GROUND;
+import static org.firstinspires.ftc.teamcode.subsystems.Elbow.ElbowPositions.MOVING;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import org.firstinspires.ftc.teamcode.base.RobotBase;
 import org.firstinspires.ftc.teamcode.commands.HighBucketDropoffCommandGroup;
 import org.firstinspires.ftc.teamcode.commands.LowBucketDropoffCommandGroup;
-import org.firstinspires.ftc.teamcode.subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.subsystems.Elbow;
-import org.firstinspires.ftc.teamcode.subsystems.Extension;
+import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.screamrobotics.SuperSCREAMLib.command.CommandScheduler;
 import org.screamrobotics.SuperSCREAMLib.command.InstantCommand;
@@ -21,14 +20,16 @@ import org.screamrobotics.SuperSCREAMLib.gamepad.GamepadKeys;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp
 public class TeleOp extends OpMode {
     RobotBase robotBase;
-    GamepadEx gamepadEx;
+    GamepadEx gamepadEx1;
+    GamepadEx gamepadEx2;
     double chance;
 
     @Override
     public void init() {
         robotBase = new RobotBase(hardwareMap);
-        gamepadEx = new GamepadEx(gamepad1);
-        chance = Math.random() * 100;
+        gamepadEx1 = new GamepadEx(gamepad1);
+        gamepadEx2 = new GamepadEx(gamepad2);
+        chance = Math.round(Math.random() * 100);
 
         new Trigger(()->robotBase.extensionSubsystem.slides.areSlidesHome())
                 .whenActive(()-> CommandScheduler.getInstance().schedule(new InstantCommand(()->robotBase.extensionSubsystem.slides.reset())));
@@ -36,27 +37,32 @@ public class TeleOp extends OpMode {
         new Trigger(()->robotBase.shoulderSubsystem.isShoulderHome())
                 .whenActive(()-> CommandScheduler.getInstance().schedule(new InstantCommand(()->robotBase.shoulderSubsystem.reset())));
 
-        new Trigger(()->gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
-                .or(new Trigger(()->gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1))
+        new Trigger(()-> gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.1)
+                .or(new Trigger(()-> gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1))
                         .whenInactive(()-> CommandScheduler.getInstance()
-                                .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setOff())))
+                                .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setOff()),
+                                        new InstantCommand(()->robotBase.elbowSubSystem.goToPosition(MOVING)))
+                        )
                         .whenActive(()-> CommandScheduler.getInstance()
-                                .schedule(new InstantCommand(()->robotBase.intakeSubSystem.setIntake(((gamepadEx.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - (gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)) + 1 ) / 2)))));
-        gamepadEx.getGamepadButton(GamepadKeys.Button.A)
+                                .schedule( new InstantCommand(()->robotBase.elbowSubSystem.goToPosition(GROUND)),
+                                        new InstantCommand(()->robotBase.intakeSubSystem.setIntake(((gamepadEx1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) - (gamepadEx1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)) + 1 ) / 2))))
+
+                        );
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.A)
                 .whenPressed(()->CommandScheduler.getInstance().schedule(new LowBucketDropoffCommandGroup(robotBase)));
-        gamepadEx.getGamepadButton(GamepadKeys.Button.Y)
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.Y)
                 .whenPressed(()->CommandScheduler.getInstance().schedule(new HighBucketDropoffCommandGroup(robotBase)));
 
-        gamepadEx.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
                 .whenPressed(()->CommandScheduler.getInstance()
                         .schedule(new InstantCommand(()->robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.HOME))));
-        gamepadEx.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(()->CommandScheduler.getInstance()
                         .schedule(new InstantCommand(()->robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.OUTTAKE))));
-        gamepadEx.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(()->CommandScheduler.getInstance()
-                        .schedule(new InstantCommand(()->robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.GROUND))));
-        gamepadEx.getGamepadButton(GamepadKeys.Button.DPAD_UP)
+                        .schedule(new InstantCommand(()->robotBase.elbowSubSystem.goToPosition(GROUND))));
+        gamepadEx1.getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .whenPressed(()->CommandScheduler.getInstance()
                         .schedule(new InstantCommand(()->robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.MIDDLE))));
 
@@ -65,10 +71,17 @@ public class TeleOp extends OpMode {
     }
 
     @Override
-    public void loop() {
-        gamepadEx.readButtons();
-        robotBase.chassisSubSystem.drive(gamepadEx.getLeftX(), gamepadEx.getLeftY(), gamepadEx.getRightX());
+    public void start() {
+        robotBase.gateSubsystem.goToPosition(Gate.gatePosition.CLOSED);
+        robotBase.elbowSubSystem.goToPosition(Elbow.ElbowPositions.MOVING);
+        robotBase.wristSubSystem.goToPosition(Wrist.wristPosition.HOME);
+    }
 
+    @Override
+    public void loop() {
+        gamepadEx1.readButtons();
+        robotBase.chassisSubSystem.drive(gamepadEx1.getLeftX(), gamepadEx1.getLeftY(), gamepadEx1.getRightX());
+        robotBase.saltSubSystem.setPosition((gamepadEx2.getLeftX() + gamepadEx2.getRightX()) / 2, (gamepadEx2.getLeftY() + gamepadEx2.getRightY()) / 2);
 
         /*
         if(gamepadEx.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0.1) {

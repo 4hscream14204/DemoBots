@@ -12,7 +12,7 @@ public class Elbow {
     public enum ElbowPositions {
         GROUND(1),
         MIDDLE(0.71),
-
+        MOVING(0.9),
         DROPOFF(0.73);
         public final double value;
         ElbowPositions(double m_position) {

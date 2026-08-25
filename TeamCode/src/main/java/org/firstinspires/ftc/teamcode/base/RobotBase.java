@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Extension;
 import org.firstinspires.ftc.teamcode.subsystems.FixedShoulder;
 import org.firstinspires.ftc.teamcode.subsystems.Gate;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.SALT;
 import org.firstinspires.ftc.teamcode.subsystems.Shoulder;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.screamrobotics.SuperSCREAMLib.hardware.Slides;
@@ -25,6 +26,8 @@ public class RobotBase {
     public FixedShoulder shoulderSubsystem;
     public Gate gateSubsystem;
 
+    public SALT saltSubSystem;
+
     public RobotBase(HardwareMap hw) {
 
 
@@ -37,7 +40,8 @@ public class RobotBase {
                 hw.get(SparkFunOTOS.class, "sensor_otos")
         );
 
-        wristSubSystem = new Wrist(hw.servo.get("wristServo"));
+
+        saltSubSystem = new SALT(hw.servo.get("salt"));
         intakeSubSystem = new Intake(hw.servo.get("intakeServoLeft"), hw.servo.get("intakeServoRight"));
         elbowSubSystem = new Elbow(hw.servo.get("elbowServo"));
         extensionSubsystem = new Extension(new Slides(hw.get(DcMotorEx.class, "extensionLeftMotor"), hw.get(DcMotorEx.class, "extensionRightMotor"), Slides.LimitSwitchUsage.YES_TRUE_WHEN_PRESSED, hw.digitalChannel.get("extensionLimitSwitch")));
@@ -45,5 +49,6 @@ public class RobotBase {
         extensionSubsystem.slides.setAutomaticRetractPower(1);
         shoulderSubsystem = new FixedShoulder(hw.get(DcMotorEx.class, "shoulderMotor"), hw.get(DcMotorEx.class, "rightShoulderMotor"),hw.digitalChannel.get("shoulderLimitSwitch"));
         gateSubsystem = new Gate(hw.servo.get("gateServo"));
+        wristSubSystem = new Wrist(hw.servo.get("wristServo"));
     }
 }
